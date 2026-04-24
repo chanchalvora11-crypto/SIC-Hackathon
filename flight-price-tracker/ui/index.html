@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flight Price Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="search-panel" aria-label="Flight search">
+        <div>
+          <p class="eyebrow">Flight Price Tracker</p>
+          <h1>Track route prices</h1>
+        </div>
+
+        <form id="tracker-form" class="tracker-form">
+          <label>
+            <span>Source</span>
+            <input id="source" name="source" list="source-list" placeholder="Delhi" autocomplete="off" required>
+          </label>
+
+          <label>
+            <span>Destination</span>
+            <input id="destination" name="destination" list="destination-list" placeholder="Cochin" autocomplete="off" required>
+          </label>
+
+          <button type="submit">
+            <span>Track flight</span>
+          </button>
+        </form>
+
+        <datalist id="source-list"></datalist>
+        <datalist id="destination-list"></datalist>
+
+        <section class="metric-strip" aria-label="Tracking summary">
+          <div>
+            <span class="metric-label">Routes</span>
+            <strong id="route-count">0</strong>
+          </div>
+          <div>
+            <span class="metric-label">Checks</span>
+            <strong id="check-count">0</strong>
+          </div>
+        </section>
+      </aside>
+
+      <section class="results-panel" aria-live="polite">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Live result</p>
+            <h2 id="route-title">Choose a route</h2>
+          </div>
+          <div id="status-pill" class="status-pill idle">Ready</div>
+        </div>
+
+        <section class="price-grid">
+          <div class="price-visual" aria-hidden="true">
+            <div class="window-view">
+              <div class="sun"></div>
+              <div class="cloud cloud-one"></div>
+              <div class="cloud cloud-two"></div>
+              <div class="flight-line"></div>
+            </div>
+          </div>
+
+          <div class="current-price">
+            <span>Current best price</span>
+            <strong id="current-price">Rs. --</strong>
+            <p id="price-note">Run tracking to compare with stored history.</p>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="panel-block">
+            <div class="section-heading">
+              <h3>Top Flights</h3>
+              <span id="flight-count">0 found</span>
+            </div>
+            <div id="flight-list" class="flight-list empty-state">
+              No route selected.
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <div class="section-heading">
+              <h3>Prediction</h3>
+              <span id="history-count">0 points</span>
+            </div>
+            <div class="prediction-card">
+              <span>Next expected price</span>
+              <strong id="prediction-price">Rs. --</strong>
+              <p id="prediction-trend">Waiting for enough history.</p>
+            </div>
+            <div id="history-bars" class="history-bars" aria-label="Price history"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
