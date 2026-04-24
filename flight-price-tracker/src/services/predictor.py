@@ -9,14 +9,11 @@ class PricePredictor:
         diff2 = last_prices[2] - last_prices[1]
 
         avg_change = (diff1 + diff2) / 2
-
         predicted_price = int(last_prices[-1] + avg_change)
 
-        # Clamp prediction (avoid unrealistic values)
         predicted_price = max(int(last_prices[-1] * 0.85), predicted_price)
         predicted_price = min(int(last_prices[-1] * 1.25), predicted_price)
 
-        # Trend detection
         if avg_change > 150:
             trend = "📈 Likely to Increase"
         elif avg_change < -150:
