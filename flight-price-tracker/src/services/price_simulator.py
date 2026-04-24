@@ -8,6 +8,7 @@ class PriceSimulator:
     def __init__(self, file_path="data/flights_processed.csv"):
         self.df = pd.read_csv(file_path)
 
+        # Clean data
         self.df["Source"] = self.df["Source"].str.strip().str.lower()
         self.df["Destination"] = self.df["Destination"].str.strip().str.lower()
 
@@ -41,22 +42,37 @@ class PriceSimulator:
         flights = []
 
         for _, row in filtered.iterrows():
-            price = int(row["Price"]) + random.randint(-300, 300)
+            base_price = int(row["Price"])
+
+            # Medium fluctuation
+            price = base_price + random.randint(-500, 500)
+
+            # Balanced spikes/drops
+            if random.random() < 0.4:
+                if random.random() < 0.6:
+                    price += random.randint(700, 1500)
+                else:
+                    price -= random.randint(300, 800)
+
+            # Prevent unrealistic low prices
+            min_price = int(base_price * 0.7)
+            price = max(min_price, price)
 
             flight = Flight(
+                airline=row.get("Airline", "Unknown"),
                 source=row["Source"],
                 destination=row["Destination"],
-                price=max(1000, price),
+                price=price,
                 stops=row.get("Total_Stops", 0),
                 time=row.get("Dep_Time", "Unknown"),
-                airline=row.get("Airline", "Unknown")
             )
 
             flights.append(flight)
 
+        # Sort by price
         flights = sorted(flights, key=lambda x: x.price)
 
-        # remove duplicate prices
+        # Remove duplicate prices
         seen = set()
         unique_flights = []
 
