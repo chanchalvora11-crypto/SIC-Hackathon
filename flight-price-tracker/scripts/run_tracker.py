@@ -1,25 +1,9 @@
 from src.core.engine import Engine
+from src.services.price_simulator import PriceSimulator
 
 
-# ===== Dummy Simulator =====
-class DummySimulator:
-    def get_price(self, source, destination):
-        import random
-        return random.randint(4000, 8000)
-
-    def get_flights(self, source, destination):
-        class Flight:
-            def __init__(self, price):
-                self.price = price
-
-            def __str__(self):
-                return f"✈ Flight | Price: ₹{self.price}"
-
-        return [Flight(6000), Flight(5000), Flight(7000)]
-
-
-# ===== Dummy Storage =====
-class DummyStorage:
+# ===== Storage =====
+class Storage:
     def __init__(self):
         self.data = {}
 
@@ -30,20 +14,18 @@ class DummyStorage:
         self.data[key] = price
 
 
-# ===== Dummy Notifier =====
-class DummyNotifier:
+# ===== Notifier =====
+class Notifier:
     def notify(self, message, new, old):
         print(f"{message}: ₹{old} → ₹{new}")
 
 
-# Initialize system
-simulator = DummySimulator()
-storage = DummyStorage()
-notifier = DummyNotifier()
+simulator = PriceSimulator()
+storage = Storage()
+notifier = Notifier()
 engine = Engine(simulator, storage, notifier)
 
 
-# ===== MENU =====
 def menu():
     while True:
         print("\n===== Flight Price Tracker =====")
@@ -53,21 +35,38 @@ def menu():
         choice = input("Enter choice: ").strip()
 
         if choice == "1":
-            source = input("Enter source city: ").strip()
-            destination = input("Enter destination city: ").strip()
+            source = input("Enter source city: ")
+            destination = input("Enter destination city: ")
 
-            if not source.isalpha() or not destination.isalpha():
-                print("Invalid input. Please enter valid city names.")
+            flights = simulator.get_flights(source, destination)
+
+            if not flights:
+                print("\nNo flights found.")
+                print("\nAvailable cities:")
+                print("Sources:", simulator.sources)
+                print("Destinations:", simulator.destinations)
                 continue
 
-            engine.run(source, destination)
+            print("\nTop 5 Cheapest Flights:\n")
+
+            for i, f in enumerate(flights, 1):
+                print(f"{i}. {f}")
+
+            best = flights[0]
+
+            print("\nBest Flight Selected:")
+            print(best)
+
+            print("\nTip: Showing cheapest available options based on latest data.\n")
+
+            engine.run(source, destination, best)
 
         elif choice == "2":
             print("Thank you for using Flight Price Tracker.")
             break
 
         else:
-            print("Invalid choice. Try again.")
+            print("Invalid choice.")
 
 
 if __name__ == "__main__":

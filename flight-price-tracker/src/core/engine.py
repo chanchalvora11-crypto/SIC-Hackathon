@@ -1,30 +1,24 @@
-from src.core.tracker import FlightTracker
-
-
 class Engine:
-    def __init__(self, simulator, storage, notifier, filters=None):
-        self.tracker = FlightTracker(simulator, storage, notifier)
+    def __init__(self, simulator, storage, notifier):
         self.simulator = simulator
-        self.filters = filters if filters else []
+        self.storage = storage
+        self.notifier = notifier
 
-    def apply_filters(self, flights):
-        for f in self.filters:
-            flights = f.apply(flights)
-        return flights
+    def run(self, source, destination, best_flight):
+        key = f"{source.lower()}-{destination.lower()}"
 
-    def run(self, source, destination):
-        flights = self.simulator.get_flights(source, destination)
+        current_price = best_flight.price
+        old_price = self.storage.get_price(key)
 
-        if self.filters:
-            flights = self.apply_filters(flights)
+        print(f"\n✈ Route: {source.title()} → {destination.title()}")
+        print(f"💰 Current Price: ₹{current_price}")
 
-        if not flights:
-            print("No flights found after applying filters.")
-            return
+        if old_price:
+            if current_price < old_price:
+                self.notifier.notify("Price dropped", current_price, old_price)
+            else:
+                print(f"Previous Price: ₹{old_price}")
+        else:
+            print("No previous data found.")
 
-        best_flight = min(flights, key=lambda x: x.price)
-
-        print("\nBest Flight Selected:")
-        print(best_flight)   # this now works correctly
-
-        self.tracker.track(source, destination)
+        self.storage.save_price(key, current_price)
