@@ -1,5 +1,6 @@
 from src.core.engine import Engine
 from src.services.price_simulator import PriceSimulator
+from src.services.notifier import Notifier
 
 
 # ===== Storage =====
@@ -14,12 +15,7 @@ class Storage:
         self.data[key] = price
 
 
-# ===== Notifier =====
-class Notifier:
-    def notify(self, message, new, old):
-        print(f"{message}: ₹{old} → ₹{new}")
-
-
+# initialize
 simulator = PriceSimulator()
 storage = Storage()
 notifier = Notifier()

@@ -8,7 +8,6 @@ class PriceSimulator:
     def __init__(self, file_path="data/flights_processed.csv"):
         self.df = pd.read_csv(file_path)
 
-        # normalize dataset
         self.df["Source"] = self.df["Source"].str.strip().str.lower()
         self.df["Destination"] = self.df["Destination"].str.strip().str.lower()
 
@@ -55,7 +54,6 @@ class PriceSimulator:
 
             flights.append(flight)
 
-        # sort AFTER price variation and take top 5
         flights = sorted(flights, key=lambda x: x.price)
 
         # remove duplicate prices
@@ -67,7 +65,6 @@ class PriceSimulator:
                 seen.add(f.price)
                 unique_flights.append(f)
 
-        # take top 5 after removing duplicates
         return unique_flights[:5]
 
     def get_price(self, source, destination):
